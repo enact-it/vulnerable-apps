@@ -93,5 +93,27 @@ export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
         },
       }
     );
+    const problematicProject =
+      new ecsPatterns.ApplicationLoadBalancedFargateService(
+        this,
+        "ProblematicProject",
+        {
+          // vpc,
+          cluster,
+          certificate,
+          sslPolicy: SslPolicy.RECOMMENDED,
+          domainName: "problematic-project" + "." + domain,
+          domainZone,
+          redirectHTTP: true,
+          cpu: 512,
+          memoryLimitMiB: 1024,
+          taskImageOptions: {
+            image: ecs.ContainerImage.fromRegistry(
+              "benno001/problematic-project"
+            ),
+            containerPort: 5000,
+          },
+        }
+      );
   }
 }
