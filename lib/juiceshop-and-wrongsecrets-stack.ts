@@ -7,6 +7,8 @@ import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecsPatterns from "aws-cdk-lib/aws-ecs-patterns";
 import { SslPolicy } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { IpAddresses } from "aws-cdk-lib/aws-ec2";
+import { HealthCheck } from "aws-cdk-lib/aws-appmesh";
+import { Duration } from "aws-cdk-lib";
 
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
@@ -14,13 +16,15 @@ const domain = "enact-it.training";
 
 const instances = [
   "alpha",
-  "beta",
+  "bravo",
   "charlie",
   "delta",
   "echo",
   "foxtrot",
-  "gamma",
+  "golf",
   "hotel",
+  "india",
+  "juliett",
 ];
 
 export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
@@ -40,6 +44,7 @@ export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
     const domainZone = route53.HostedZone.fromLookup(this, "Zone", {
       domainName: domain,
     });
+
     const certificate = new acm.Certificate(this, "Cert", {
       domainName: domain,
       certificateName: domain,
@@ -56,7 +61,7 @@ export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
           // vpc,
           cluster,
           certificate,
-          sslPolicy: SslPolicy.RECOMMENDED,
+          sslPolicy: SslPolicy.TLS13_13,
           domainName: "juiceshop-" + element + "." + domain,
           domainZone,
           redirectHTTP: true,
@@ -67,6 +72,7 @@ export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
               "bkimminich/juice-shop:latest"
             ),
             containerPort: 3000,
+            enableLogging: true,
           },
         }
       );
@@ -79,12 +85,12 @@ export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
         // vpc,
         cluster,
         certificate,
-        sslPolicy: SslPolicy.RECOMMENDED,
+        sslPolicy: SslPolicy.TLS13_13,
         domainName: "wrongsecrets" + "." + domain,
         domainZone,
         redirectHTTP: true,
-        cpu: 512,
-        memoryLimitMiB: 1024,
+        cpu: 1024,
+        memoryLimitMiB: 2048,
         taskImageOptions: {
           image: ecs.ContainerImage.fromRegistry(
             "jeroenwillemsen/wrongsecrets:latest-no-vault"
@@ -101,7 +107,7 @@ export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
           // vpc,
           cluster,
           certificate,
-          sslPolicy: SslPolicy.RECOMMENDED,
+          sslPolicy: SslPolicy.TLS13_13,
           domainName: "problematic-project" + "." + domain,
           domainZone,
           redirectHTTP: true,
