@@ -10,8 +10,6 @@ import { IpAddresses } from "aws-cdk-lib/aws-ec2";
 import { HealthCheck } from "aws-cdk-lib/aws-appmesh";
 import { Duration } from "aws-cdk-lib";
 
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
-
 const domain = "enact-it.training";
 
 const instances = [
@@ -121,5 +119,13 @@ export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
           },
         }
       );
+    problematicProject.targetGroup.configureHealthCheck({
+      path: "/",
+      healthyHttpCodes: "200-399",
+      healthyThresholdCount: 2,
+      unhealthyThresholdCount: 2,
+      interval: Duration.seconds(5),
+      timeout: Duration.seconds(4),
+    });
   }
 }
