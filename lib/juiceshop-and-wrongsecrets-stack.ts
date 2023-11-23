@@ -9,6 +9,7 @@ import { SslPolicy } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { IpAddresses } from "aws-cdk-lib/aws-ec2";
 import { HealthCheck } from "aws-cdk-lib/aws-appmesh";
 import { Duration } from "aws-cdk-lib";
+// import * as apprunner from "@aws-cdk/aws-apprunner-alpha";
 
 const domain = "enact-it.training";
 
@@ -17,12 +18,12 @@ const instances = [
   "bravo",
   "charlie",
   "delta",
-  "echo",
-  "foxtrot",
-  "golf",
-  "hotel",
-  "india",
-  "juliett",
+  // "echo",
+  // "foxtrot",
+  // "golf",
+  // "hotel",
+  // "india",
+  // "juliett",
 ];
 
 export class JuiceshopAndWrongsecretsStack extends cdk.Stack {
