@@ -47,17 +47,13 @@ resource "aws_route53_record" "main" {
   records = [aws_apprunner_custom_domain_association.domain.dns_target]
 }
 
-locals {
-  records = {
+resource "aws_route53_record" "cert_validation" {
+  for_each = {
     for record in aws_apprunner_custom_domain_association.domain.certificate_validation_records : record.name => record.value
   }
-}
-
-resource "aws_route53_record" "cert_validation" {
-  for_each = local.records
-  zone_id  = data.aws_route53_zone.zone.id
-  name     = trimsuffix(each.key, "${var.name}.${var.domain_name}")
-  type     = "CNAME"
-  ttl      = 300
-  records  = [each.value]
+  zone_id = data.aws_route53_zone.zone.id
+  name    = trimsuffix(each.key, "${var.name}.${var.domain_name}")
+  type    = "CNAME"
+  ttl     = 300
+  records = [each.value]
 }
