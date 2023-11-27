@@ -28,9 +28,8 @@ resource "aws_apprunner_service" "service" {
   }
 }
 
-
 resource "aws_apprunner_custom_domain_association" "domain" {
-  domain_name          = "${var.name}.enact-it.training"
+  domain_name          = "${var.name}.${var.domain_name}"
   service_arn          = aws_apprunner_service.service.arn
   enable_www_subdomain = false
 }
@@ -45,15 +44,4 @@ resource "aws_route53_record" "main" {
   type    = "CNAME"
   ttl     = 300
   records = [aws_apprunner_custom_domain_association.domain.dns_target]
-}
-
-resource "aws_route53_record" "cert_validation" {
-  for_each = {
-    for record in aws_apprunner_custom_domain_association.domain.certificate_validation_records : record.name => record.value
-  }
-  zone_id = data.aws_route53_zone.zone.id
-  name    = trimsuffix(each.key, "${var.name}.${var.domain_name}")
-  type    = "CNAME"
-  ttl     = 300
-  records = [each.value]
 }

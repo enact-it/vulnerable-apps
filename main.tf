@@ -91,7 +91,7 @@ module "wrongsecrets" {
 }
 
 module "problematic_project" {
-  source           = "./modules/problematic-project"
+  source           = "./modules/app-runner"
   name             = "problematic-project"
   image            = "${aws_ecr_repository.problematic_project.repository_url}:latest"
   access_role_arn  = aws_iam_role.apprunner.arn
@@ -99,3 +99,21 @@ module "problematic_project" {
   healthcheck_path = "/posts/"
 }
 
+module "juiceshop_certificates" {
+  for_each                       = module.juiceshop
+  source                         = "./modules/certificates"
+  name                           = module.juiceshop[each.key].name
+  certificate_validation_records = module.juiceshop[each.key].certificate_validation_records
+}
+
+module "wrongsecrets_certificates" {
+  source                         = "./modules/certificates"
+  name                           = module.problematic_project.name
+  certificate_validation_records = module.problematic_project.certificate_validation_records
+}
+
+module "problematic_project_certificates" {
+  source                         = "./modules/certificates"
+  name                           = module.wrongsecrets.name
+  certificate_validation_records = module.wrongsecrets.certificate_validation_records
+}
