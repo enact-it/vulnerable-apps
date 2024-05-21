@@ -1,6 +1,10 @@
 
 resource "aws_apprunner_service" "service" {
   service_name = var.name
+  instance_configuration {
+    cpu    = 2048
+    memory = 2048
+  }
 
   source_configuration {
     image_repository {
@@ -8,6 +12,9 @@ resource "aws_apprunner_service" "service" {
       image_repository_type = "ECR"
       image_configuration {
         port = var.application_port
+        runtime_environment_variables = {
+          JAVA_OPTS = "-Xmx1624m -Xms512m"
+        }
       }
     }
     authentication_configuration {

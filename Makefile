@@ -28,6 +28,8 @@ apply:
 	-target="aws_ecr_repository.juiceshop" \
 	-target="aws_ecr_repository.wrongsecrets" \
 	-target="aws_ecr_repository.problematic_project" \
+	-auto-approve
+	terraform apply \
 	-target="module.juiceshop" \
 	-target="module.wrongsecrets" \
 	-target="module.problematic_project" \

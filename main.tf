@@ -14,7 +14,7 @@ locals {
     "bravo",
     "charlie",
     "delta",
-    // "echo",
+    "echo"
     // "foxtrot",
     // "golf",
     // "hotel",
