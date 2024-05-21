@@ -87,7 +87,7 @@ module "wrongsecrets" {
   image            = "${aws_ecr_repository.wrongsecrets.repository_url}:latest"
   access_role_arn  = aws_iam_role.apprunner.arn
   application_port = 8080
-  healthcheck_path = "/"
+  healthcheck_path = "/actuator/health/liveness"
 }
 
 module "problematic_project" {
